@@ -1,0 +1,27 @@
+# Ignore direnv environment files
+.env*
+.envrc
+
+# Terraform state
+*.tfstate
+*.tfstate.*
+
+# Crash logs
+crash.log
+
+# Override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# CLI configuration
+.terraformrc
+terraform.rc
+
+# Terraform lock file (optionnel, si vous ne voulez pas partager le lock)
+.terraform.lock.hcl
+
+# Local .terraform directory
+.terraform/
+

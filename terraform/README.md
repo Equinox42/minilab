@@ -1,6 +1,6 @@
 ## Handling Sensitive Variables
 
-I managed sensitive variables with the help of direnv, which automatically loads environment variables defined in a .envrc file when entering a directory.
+I manage sensitive variables with the help of direnv, which automatically loads environment variables defined in a .envrc file when entering a directory.
 
 ```
 # .envrc

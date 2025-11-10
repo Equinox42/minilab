@@ -37,3 +37,8 @@ variable "gateway" {
   type        = string
   default     = "192.168.1.1"
 }
+
+variable "username" {
+  type        = string
+  default     = ""
+}
