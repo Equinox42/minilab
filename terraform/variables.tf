@@ -40,5 +40,21 @@ variable "gateway" {
 
 variable "username" {
   type        = string
-  default     = ""
+}
+
+variable "gitea_host_mem" {
+  description = "Memory allocated to Gitea instance"
+  type        = number
+  default     = 2048
+}
+
+variable "gitea_host_cpu" {
+  description = "CPU allocated to Gitea instance"
+  type        = number
+  default     = 2
+}
+
+variable "gitea_host_ip" {
+  description = "IP address of the Gitea host"
+  type        = string
 }
