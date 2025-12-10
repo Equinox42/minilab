@@ -14,11 +14,11 @@ spec:
     files:
       - name: metallb-installation
         src: https://raw.githubusercontent.com/metallb/metallb/v0.15.3/config/manifests/metallb-native.yaml
-        dstDir: /var/lib/k0s/manifests/metallb/01-install.yaml
+        dstDir: /var/lib/k0s/manifests/01-metallb-install.yaml
         perm: 0600
       - name: metallb-configuration
         src: ./metallb/metallb-config.yaml
-        dstDir: /var/lib/k0s/manifests/metallb/02-config.yaml
+        dstDir: /var/lib/k0s/manifests/02-metallb-config.yaml
         perm: 0600
    # bash-like expressions are supported in the configuration for environment variable substition
   - role: worker
