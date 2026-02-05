@@ -1,3 +1,7 @@
+variable "enabled_dev_cluster" {
+  type = bool
+}
+
 variable "api_token" {
   description = "Proxmox API token for authentication"
   type        = string
@@ -9,13 +13,12 @@ variable "proxmox_endpoint" {
   type        = string
 }
 
-variable "proxmox_hostname" {
-  description = "Target Proxmox node where VMs will be deployed"
+variable "proxmox_node" {
+  description = "Name of the proxmox node where VMs will be deployed"
   type        = string
-  default     = "proxmox"
 }
 
-variable "id_template" {
+variable "template_id" {
   description = "Template VM ID to clone"
   type        = number
 }
@@ -35,7 +38,6 @@ variable "datastore" {
 variable "gateway" {
   description = "Default IPv4 gateway"
   type        = string
-  default     = "192.168.1.1"
 }
 
 variable "username" {
@@ -57,4 +59,22 @@ variable "gitea_host_cpu" {
 variable "gitea_host_ip" {
   description = "IP address of the Gitea host"
   type        = string
+}
+
+variable "kubernetes_nodes_prod" {
+  description = "Nodes Configuration"
+  type = map(object({
+    ip     = string
+    cpu    = number
+    memory = number
+  }))
+}
+
+variable "kubernetes_nodes_dev" {
+  description = "Nodes Configuration"
+  type = map(object({
+    ip     = string
+    cpu    = number
+    memory = number
+  }))
 }
