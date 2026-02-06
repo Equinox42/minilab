@@ -1,60 +1,57 @@
-variable "environment" {
-  description = "cluster environment"
-  type        = string
+resource "proxmox_virtual_environment_vm" "kubernetes_nodes" {
+  for_each = var.kubernetes_nodes
 
-  validation {
-    condition     = contains(["dev", "prod"], var.environment)
-    error_message = "Environment must be dev or prod."
+  name        = "${var.environment}-${each.key}"
+  description = "Kubernetes node for ${var.environment} cluster - managed by Terraform"
+  tags        = concat(["k8s", "debian", var.environment], var.extra_tags)
+  node_name   = var.proxmox_node
+  started     = true
+  stop_on_destroy = true
+
+  clone {
+    vm_id = var.template_id
   }
-}
 
-variable "proxmox_node" {
-  description = "Proxmox node where VMs will be deployed"
-  type        = string
-}
-
-variable "kubernetes_nodes" {
-  description = "Nodes Configuration"
-  type = map(object({
-    ip     = string
-    cpu    = number
-    memory = number
-  }))
-
-  validation {
-    condition = alltrue([
-      for node in var.kubernetes_nodes : node.cpu >= 2 && node.memory >= 2048
-    ])
-    error_message = "Each nodes must have at least 2 cpu and 2048 memory allocated"
+  agent {
+    enabled = false 
   }
-}
 
-variable "template_id" {
-  description = "Template VM ID to clone"
-  type = number
-}
+  cpu {
+    cores = each.value.cpu
+    type  = "host"
+    numa  = false
+  }
 
-variable "ssh_key" {
-  description = "SSH public key to inject into the VM"
-  type      = string
-  sensitive = true
-}
+  memory {
+    dedicated = each.value.memory
+  }
 
-variable "username" {
-  type = string
-}
+  disk {
+    datastore_id = var.datastore_id
+    interface    = "scsi0"
+    file_format  = "raw"
+    size         = 50
+  }
 
-variable "gateway" {
-  description = "IP of the gateway"
-  type = string
-}
+  initialization {
+    ip_config {
+      ipv4 {
+        address = "${each.value.ip}/24"
+        gateway = var.gateway
+      }
+    }
 
-variable "datastore_id" {
-  type    = string
-  default = "local-lvm"
-}
+    user_account {
+      username = var.username
+      keys     = [var.ssh_key]
+    }
+  }
 
-variable "extra_tags" {
-  type    = list(string)
-  default = []
+  network_device {
+    bridge = "vmbr0"
+  }
+
+  operating_system {
+    type = "l26"
+  }
 }
