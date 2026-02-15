@@ -78,3 +78,8 @@ variable "kubernetes_nodes_dev" {
     memory = number
   }))
 }
+
+variable "ssh_private_key_path" {
+  description = "path to private key used by k0sctl for boostraping kubernetes cluster"
+  type = string
+}

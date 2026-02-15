@@ -25,3 +25,19 @@ module "k8s_cluster_dev" {
 
 }
 
+
+resource "terraform_data" "k0s_bootstrap_prod_cluster" {
+  depends_on = [module.k8s_cluster_prod]
+
+  provisioner "local-exec" {
+    command = "k0sctl apply --config ${path.module}/../k0s/k0s_cluster.yaml"
+    environment = {
+      SSH_PRIVATE_KEY_PATH = var.ssh_private_key_path
+      SSH_USER = var.username
+      CONTROLLER_IP = var.kubernetes_nodes_prod["control-plane"].ip
+      WORKER1_IP = var.kubernetes_nodes_prod["worker-1"].ip
+      WORKER2_IP = var.kubernetes_nodes_prod["worker-2"].ip
+      WORKER3_IP = var.kubernetes_nodes_prod["worker-3"].ip
+    }
+  }
+}

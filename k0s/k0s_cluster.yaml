@@ -9,7 +9,7 @@ spec:
     ssh:
       address: ${CONTROLLER_IP}
       user: ${SSH_USER}
-      keyPath: ${SSH_KEY}
+      keyPath: ${SSH_PRIVATE_KEY_PATH}
     # k0s reads manifests directory in alphabetical order
     files:
       - name: metallb-installation
@@ -25,24 +25,24 @@ spec:
     ssh:
       address: ${WORKER1_IP}
       user: ${SSH_USER}
-      keyPath: ${SSH_KEY}
+      keyPath: ${SSH_PRIVATE_KEY_PATH}
   - role: worker
     ssh:
       address: ${WORKER2_IP}
       user: ${SSH_USER}
-      keyPath: ${SSH_KEY}
+      keyPath: ${SSH_PRIVATE_KEY_PATH}
   - role: worker
     ssh:
       address: ${WORKER3_IP}
       user: ${SSH_USER}
-      keyPath: ${SSH_KEY}
+      keyPath: ${SSH_PRIVATE_KEY_PATH}
   k0s:
     version: v1.34.2+k0s.0
     config:
       apiVersion: k0s.k0sproject.io/v1beta1
       kind: ClusterConfig
       metadata:
-        name: mini-k0s
+        name: ${CLUSTER_NAME}
       spec:
         network:
           provider: calico
@@ -67,3 +67,7 @@ spec:
       force: true
       ignoreDaemonSets: true
       deleteEmptyDirData: true
+    concurrency:
+      limit: 30
+      workerDisruptionPercent: 10
+      uploads: 5
