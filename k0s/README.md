@@ -32,5 +32,11 @@ k0sctl apply --config k0s_cluster.yaml --no-wait
 Once deployed, the Kubernetes API configuration is generated at `/var/lib/k0s/pki/admin.conf` on the control plane. You can easily fetch it to your local machine with the following commmand :
 
 ```bash
-k0sctl kubeconfig --config k0s_cluster.yaml > ~/.kube/name_of_your_cluster.config
+k0sctl kubeconfig --config k0s_cluster.yaml > ~/.kube/k0s_cluster.config
+```
+
+Add it to the `KUBECONFIG` variable : 
+
+```bash
+export KUBECONFIG=~/.kube/already_existing_cluster.config:~/.kube/k0s_cluster.config
 ```
