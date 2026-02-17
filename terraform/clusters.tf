@@ -33,8 +33,8 @@ resource "terraform_data" "k0s_bootstrap" {
   provisioner "local-exec" {
     command = "bash ${path.module}/../k0s/k0s_init.sh"
     environment = {
-      MANIFEST_PATH = "${path.module}/../k0s/k0s_cluster.yaml"
-      CLUSTER_NAME = "mini-${module.k8s_cluster_prod.environment}"
+      MANIFEST_PATH = "${path.module}/../k0s/k0sctl.yaml"
+      CLUSTER_NAME = "mini-k0s-${module.k8s_cluster_prod.environment}"
       SSH_PRIVATE_KEY_PATH = var.ssh_private_key_path
       SSH_USER = var.username
       CONTROLLER_IP = var.kubernetes_nodes_prod["control-plane"].ip
