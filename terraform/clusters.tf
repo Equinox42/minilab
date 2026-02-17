@@ -11,6 +11,8 @@ module "k8s_cluster_prod" {
 
 }
 
+# Development cluster: Used exclusively to provision ephemeral machines for manual testing.
+
 module "k8s_cluster_dev" {
 
   count = var.enabled_dev_cluster ? 1 : 0
@@ -25,13 +27,14 @@ module "k8s_cluster_dev" {
 
 }
 
-
-resource "terraform_data" "k0s_bootstrap_prod_cluster" {
+resource "terraform_data" "k0s_bootstrap" {
   depends_on = [module.k8s_cluster_prod]
 
   provisioner "local-exec" {
-    command = "k0sctl apply --config ${path.module}/../k0s/k0s_cluster.yaml"
+    command = "bash ${path.module}/../k0s/k0s_init.sh"
     environment = {
+      MANIFEST_PATH = "${path.module}/../k0s/k0s_cluster.yaml"
+      CLUSTER_NAME = "mini-${module.k8s_cluster_prod.environment}"
       SSH_PRIVATE_KEY_PATH = var.ssh_private_key_path
       SSH_USER = var.username
       CONTROLLER_IP = var.kubernetes_nodes_prod["control-plane"].ip

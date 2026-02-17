@@ -4,7 +4,13 @@ terraform {
       source  = "bpg/proxmox"
       version = "0.78.2"
     }
-  }
+
+    helm = {
+      source = "hashicorp/helm"
+      version = "3.1.1"
+    }
+
+}
 }
 
 provider "proxmox" {
@@ -14,6 +20,12 @@ provider "proxmox" {
   ssh {
     agent    = true
     username = "root"
+  }
+}
+
+provider "helm" {
+  kubernetes = {
+    config_path = ""
   }
 }
 
