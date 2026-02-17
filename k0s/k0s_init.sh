@@ -26,13 +26,19 @@ STARTING KUBERNETES CLUSTER CONFIGURATION
 ===========================================
 EOF
 
+# Test if k0sctl binary is present 
 
+if ! command -v k0sctl >/dev/null 2>&1; then
+  _print_red "[FATAL] 'k0sctl' binary could not be found. Please install it or add it to your PATH variable."
+  exit 1
+fi
 # Test if the k0sctl manifest is present
 
 if [[ ! -f "${MANIFEST_PATH}" ]]; then
   _print_red "[FATAL] k0sctl manifest is missing at ${MANIFEST_PATH}"
   exit 1
 fi
+
 
 # Cleaning up ~/.ssh/known_host
 
@@ -50,9 +56,9 @@ for IP in "${CONTROLLER_IP}" "${WORKER1_IP}" "${WORKER2_IP}" "${WORKER3_IP}"; do
 
 done
 
+sleep 5
 
-k0sctl apply --config "${MANIFEST_PATH}" --kubeconfig-out "${K0S_KUBECONFIG}" &> "/tmp/k0s-${CLUSTER_NAME}-init.log"
-
+k0sctl apply --config "${MANIFEST_PATH}" --kubeconfig-out "${K0S_KUBECONFIG}"
 
 
 _print_cyan "add this file to your KUBECONFIG variable ${K0S_KUBECONFIG}"
