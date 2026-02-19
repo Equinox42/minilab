@@ -39,8 +39,7 @@ if [[ ! -f "${MANIFEST_PATH}" ]]; then
   exit 1
 fi
 
-
-# Cleaning up ~/.ssh/known_host
+# Cleaning up ~/.ssh/known_host 
 
 echo "Cleaning up already existant hosts in $HOME/.ssh/known_hosts"
 
@@ -48,7 +47,7 @@ for IP in "${CONTROLLER_IP}" "${WORKER1_IP}" "${WORKER2_IP}" "${WORKER3_IP}"; do
   
 
   if [[ -n "${IP}" ]] && ssh-keygen -F "${IP}" > /dev/null 2>&1; then
-    echo "cleaning entry for '${IP}'"
+    echo "cleaning entry for '${IP}' previous entry will be found at $HOME/.ssh/known_hosts.old"
     ssh-keygen -R "${IP}" > /dev/null 2>&1
   else
     echo "no entry was found for '${IP}'"
@@ -58,7 +57,14 @@ done
 
 sleep 5
 
-k0sctl apply --config "${MANIFEST_PATH}" --kubeconfig-out "${K0S_KUBECONFIG}"
+# Boostraping cluster 
 
+if [[ -f "$K0S_KUBECONFIG" ]]; then
+  echo "Found another kubeconfig file with the same name, appending today's date."
+  k0sctl apply --config "${MANIFEST_PATH}" --kubeconfig-out "${K0S_KUBECONFIG}-$(date -I)"
+  _print_cyan "add this file to your KUBECONFIG variable "${K0S_KUBECONFIG}-$(date -I)"
+else
+  k0sctl apply --config "${MANIFEST_PATH}" --kubeconfig-out "${K0S_KUBECONFIG}"
+  _print_cyan "add this file to your KUBECONFIG variable ${K0S_KUBECONFIG}"
+fi
 
-_print_cyan "add this file to your KUBECONFIG variable ${K0S_KUBECONFIG}"
