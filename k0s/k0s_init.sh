@@ -10,6 +10,7 @@ set -o nounset
 # set -o xtrace
 
 K0S_KUBECONFIG="$HOME/.kube/${CLUSTER_NAME}.config"
+K0S_KUBECONFIG_TODAY="$HOME/.kube/${CLUSTER_NAME}.config-$(date -I)"
 
 # Function to print in red
 _print_red() {
@@ -61,10 +62,11 @@ sleep 5
 
 if [[ -f "$K0S_KUBECONFIG" ]]; then
   echo "Found another kubeconfig file with the same name, appending today's date."
-  k0sctl apply --config "${MANIFEST_PATH}" --kubeconfig-out "${K0S_KUBECONFIG}-$(date -I)"
-  _print_cyan "add this file to your KUBECONFIG variable "${K0S_KUBECONFIG}-$(date -I)"
+  k0sctl apply --config "${MANIFEST_PATH}" --kubeconfig-out "${K0S_KUBECONFIG_TODAY}"
+  _print_cyan "add this file to your KUBECONFIG variable ${K0S_KUBECONFIG_TODAY}"
 else
   k0sctl apply --config "${MANIFEST_PATH}" --kubeconfig-out "${K0S_KUBECONFIG}"
   _print_cyan "add this file to your KUBECONFIG variable ${K0S_KUBECONFIG}"
 fi
+
 
