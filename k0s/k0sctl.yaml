@@ -1,15 +1,16 @@
 apiVersion: k0sctl.k0sproject.io/v1beta1
 kind: Cluster
 metadata:
-  name: mini-k0s
-  user: miniadmin
+  name: ${CLUSTER_NAME}
+  user: admin
 spec:
   hosts:
-  - role: controller
-    ssh:
+  - ssh:
       address: ${CONTROLLER_IP}
       user: ${SSH_USER}
+      port: 22
       keyPath: ${SSH_PRIVATE_KEY_PATH}
+    role: controller
     ## Note : 2026-02-15 transition using k0s Manifest Deployer to kubernetes provider in Terraform 
     # k0s reads manifests directory in alphabetical order
     # files:
@@ -22,21 +23,24 @@ spec:
     #     dstDir: /var/lib/k0s/manifests/02-metallb-config.yaml
     #     perm: 0600
    # bash-like expressions are supported in the configuration for environment variable substition
-  - role: worker
-    ssh:
+  - ssh:
       address: ${WORKER1_IP}
       user: ${SSH_USER}
+      port: 22
       keyPath: ${SSH_PRIVATE_KEY_PATH}
-  - role: worker
-    ssh:
+    role: worker
+  - ssh:
       address: ${WORKER2_IP}
       user: ${SSH_USER}
+      port: 22
       keyPath: ${SSH_PRIVATE_KEY_PATH}
-  - role: worker
-    ssh:
+    role: worker
+  - ssh:
       address: ${WORKER3_IP}
       user: ${SSH_USER}
+      port: 22
       keyPath: ${SSH_PRIVATE_KEY_PATH}
+    role: worker
   k0s:
     version: v1.34.2+k0s.0
     config:
@@ -64,12 +68,19 @@ spec:
       enabled: true
     drain:
       enabled: true
-      gracePeriod: 2m
-      timeout: 5m
+      gracePeriod: 2m0s
+      timeout: 5m0s
       force: true
       ignoreDaemonSets: true
       deleteEmptyDirData: true
+      podSelector: ""
+      skipWaitForDeleteTimeout: 0s
     concurrency:
       limit: 30
       workerDisruptionPercent: 10
       uploads: 5
+    evictTaint:
+      enabled: false
+      taint: k0sctl.k0sproject.io/evict=true
+      effect: NoExecute
+      controllerWorkers: false
