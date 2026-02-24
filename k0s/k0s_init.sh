@@ -33,6 +33,7 @@ if ! command -v k0sctl >/dev/null 2>&1; then
   _print_red "[FATAL] 'k0sctl' binary could not be found. Please install it or add it to your PATH variable."
   exit 1
 fi
+
 # Test if the k0sctl manifest is present
 
 if [[ ! -f "${MANIFEST_PATH}" ]]; then
@@ -45,7 +46,6 @@ fi
 echo "Cleaning up already existant hosts in $HOME/.ssh/known_hosts"
 
 for IP in "${CONTROLLER_IP}" "${WORKER1_IP}" "${WORKER2_IP}" "${WORKER3_IP}"; do
-  
 
   if [[ -n "${IP}" ]] && ssh-keygen -F "${IP}" > /dev/null 2>&1; then
     echo "cleaning entry for '${IP}' previous entry will be found at $HOME/.ssh/known_hosts.old"
@@ -56,16 +56,16 @@ for IP in "${CONTROLLER_IP}" "${WORKER1_IP}" "${WORKER2_IP}" "${WORKER3_IP}"; do
 
 done
 
-sleep 5
+sleep 15
 
 # Boostraping cluster 
 
 if [[ -f "$K0S_KUBECONFIG" ]]; then
   echo "Found another kubeconfig file with the same name, appending today's date."
-  k0sctl apply --config "${MANIFEST_PATH}" --kubeconfig-out "${K0S_KUBECONFIG_TODAY}"
+  k0sctl apply --debug --config "${MANIFEST_PATH}" --kubeconfig-out "${K0S_KUBECONFIG_TODAY}"
   _print_cyan "add this file to your KUBECONFIG variable ${K0S_KUBECONFIG_TODAY}"
 else
-  k0sctl apply --config "${MANIFEST_PATH}" --kubeconfig-out "${K0S_KUBECONFIG}"
+  k0sctl apply --debug --config "${MANIFEST_PATH}" --kubeconfig-out "${K0S_KUBECONFIG}"
   _print_cyan "add this file to your KUBECONFIG variable ${K0S_KUBECONFIG}"
 fi
 
