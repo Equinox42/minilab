@@ -24,16 +24,15 @@ module "k8s_cluster_dev" {
   ssh_key = var.ssh_key
   gateway = var.gateway
   proxmox_node = var.proxmox_node
-
 }
 
 resource "terraform_data" "k0s_bootstrap" {
   depends_on = [module.k8s_cluster_prod]
 
   provisioner "local-exec" {
-    command = "bash ${path.module}/../k0s/k0s_init.sh"
+    command = "bash ${abspath("${path.module}/../k0s/k0s_init.sh")}"
     environment = {
-      MANIFEST_PATH = "${path.module}/../k0s/k0sctl.yaml"
+      MANIFEST_PATH = abspath("${path.module}/../k0s/k0sctl.yaml")
       CLUSTER_NAME = "mini-k0s-${module.k8s_cluster_prod.environment}"
       SSH_PRIVATE_KEY_PATH = var.ssh_private_key_path
       SSH_USER = var.username
