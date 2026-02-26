@@ -83,3 +83,13 @@ variable "ssh_private_key_path" {
   description = "path to private key used by k0sctl for boostraping kubernetes cluster"
   type = string
 }
+
+variable "kubeconfig_path" {
+  description = "Path of the kubeconfig file"
+  type = string
+}
+
+variable "metallb_adress_pool" {
+  description = "Pool of ip addresses that will use metallb"
+  type        = string
+}

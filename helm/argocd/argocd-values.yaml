@@ -1,0 +1,29 @@
+global:
+  # -- Default domain used by all components
+  ## Used for ingresses, certificates, SSO, notifications, etc.
+  domain: argocd.local
+
+crds:
+  # Delete CRD when the release is deleted
+  keep: false
+
+redis-ha:
+  enabled: false
+
+controller:
+  replicas: 1
+
+server:
+  replicas: 1
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    https: false
+  extraArgs:
+      - --insecure
+
+repoServer:
+  replicas: 1
+
+applicationSet:
+  replicas: 1

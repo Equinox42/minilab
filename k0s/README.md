@@ -4,6 +4,8 @@ k0s is a certified Kubernetes distribution that works on different environments 
 
 More detail about the project : https://k0sproject.io/
 
+Lightning talk about the k0s family at the Cloud Native Days France : https://www.youtube.com/watch?v=Edo3e7KFqN8&feature=youtu.be
+
 k0sctl is a command-line tool for bootstrapping and managing k0s clusters. k0sctl connects to the provided hosts using SSH and gathers information on the hosts, with which it forms a cluster by configuring the hosts, deploying k0s, and then connecting the k0s nodes together.
 
 
