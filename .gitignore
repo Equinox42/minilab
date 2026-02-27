@@ -1,6 +1,5 @@
 # Ignore direnv environment files
 .env*
-.envrc
 
 # Terraform state
 *.tfstate
@@ -19,7 +18,7 @@ override.tf.json
 .terraformrc
 terraform.rc
 
-# Terraform lock file (optionnel, si vous ne voulez pas partager le lock)
+# Terraform lock file
 .terraform.lock.hcl
 
 # Local .terraform directory
