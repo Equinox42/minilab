@@ -1,10 +1,7 @@
 global:
-  # -- Default domain used by all components
-  ## Used for ingresses, certificates, SSO, notifications, etc.
-  domain: argocd.local
+  domain: argocd.40cat-not-found.tech
 
 crds:
-  # Delete CRD when the release is deleted
   keep: false
 
 redis-ha:
@@ -13,17 +10,25 @@ redis-ha:
 controller:
   replicas: 1
 
-server:
-  replicas: 1
-  ingress:
-    enabled: true
-    ingressClassName: traefik
-    https: false
-  extraArgs:
-      - --insecure
-
 repoServer:
   replicas: 1
 
 applicationSet:
   replicas: 1
+
+configs:
+  params:
+    server.insecure: true
+
+server:
+  replicas: 1
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: "cloudflare" 
+      traefik.ingress.kubernetes.io/router.tls: "true"
+    tls:
+      - hosts:
+          - argocd.40cat-not-found.tech
+        secretName: argocd-tls-secret
