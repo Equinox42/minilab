@@ -93,3 +93,19 @@ variable "metallb_adress_pool" {
   description = "Pool of ip addresses that will use metallb"
   type        = string
 }
+
+variable "argocd_server_address" {
+  description = "ArgoCD server hostname"
+  type = string
+}
+
+variable "argocd_server_username" {
+  description = "ArgoCD server user"
+  type = string
+}
+
+variable "argocd_server_password" {
+  description = ""
+  type = string
+  sensitive = true
+}

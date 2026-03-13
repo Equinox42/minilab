@@ -39,3 +39,8 @@ provider "helm" {
   }
 }
 
+provider "argocd" {
+  server_addr = var.argocd_server_address
+  username    = var.argocd_server_username
+  password    = var.argocd_server_password
+}
