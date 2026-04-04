@@ -84,13 +84,13 @@ variable "ssh_private_key_path" {
   type = string
 }
 
-variable "kubeconfig_path" {
-  description = "Path of the kubeconfig file"
-  type = string
+variable "metallb_adress_pool" {
+  description = "Pool of ip addresses that will be used by metallb"
+  type        = string
 }
 
-variable "metallb_adress_pool" {
-  description = "Pool of ip addresses that will use metallb"
+variable "kubeconfig_path" {
+  description = "Path of the kubeconfig file"
   type        = string
 }
 
@@ -100,12 +100,10 @@ variable "argocd_server_address" {
 }
 
 variable "argocd_server_username" {
-  description = "ArgoCD server user"
   type = string
 }
 
 variable "argocd_server_password" {
-  description = ""
   type = string
   sensitive = true
 }
