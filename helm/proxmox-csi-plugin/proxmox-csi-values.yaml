@@ -1,7 +1,7 @@
 # proxmox-csi.yaml
 config:
   clusters:
-    - url: https://x.x.x.x:8006/api/json
+    - url: https://x.x.x.x:8006/api2/json
       insecure: true
       token_id: "kubernetes-csi@pve!csi"
       # The token secret should be present in your terraform state if you used terraform to provision the resources
@@ -12,7 +12,8 @@ config:
 # Define the storage classes
 storageClass:
   - name: proxmox-data-xfs
-    storage: data
+  # See Datacenter > Storage
+    storage: local-lvm
     reclaimPolicy: Delete
     fstype: xfs
     ssd: true 
