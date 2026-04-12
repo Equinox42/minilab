@@ -1,0 +1,29 @@
+persistence:
+  type: pvc
+  enabled: true
+
+ingress:
+  enabled: true
+  ingressClassName: traefik
+  annotations:
+    cert-manager.io/cluster-issuer: "cloudflare"
+    traefik.ingress.kubernetes.io/router.tls: "true"
+  labels: {}
+  path: /
+  pathType: Prefix
+
+  hosts:
+    - grafana.40cat-not-found.tech
+
+  tls:
+   - secretName: grafana-tls-secret
+     hosts:
+       - grafana.40cat-not-found.tech
+
+datasources:
+ datasources.yaml:
+   apiVersion: 1
+   datasources:
+   - name: victoriametrics
+     type: prometheus
+     url: http://vmsingle-db.victoriametrics.svc.cluster.local:8429/
