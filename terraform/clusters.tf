@@ -1,45 +1,45 @@
-module "k8s_cluster_prod" {
-
+module "k8s_cluster" {
   source = "./modules/kubernetes-cluster"
-  environment = "prod"
-  username = var.username
-  template_id = var.template_id
-  kubernetes_nodes = var.kubernetes_nodes_prod
-  ssh_key = var.ssh_key
-  gateway = var.gateway
-  proxmox_node = var.proxmox_node
-
+  
+  cluster_name = "management"
+  username         = var.username
+  template_id      = var.template_id
+  kubernetes_nodes = var.kubernetes_nodes
+  ssh_key          = var.ssh_key
+  gateway          = var.gateway
+  proxmox_node     = var.proxmox_node
 }
 
-# Development cluster: Used exclusively to provision ephemeral machines for manual testing.
 
-module "k8s_cluster_dev" {
+resource "local_file" "k0sctl_config" {
+  filename = "${path.module}/../k0s/generated/k0sctl-${module.k8s_cluster.cluster_name}.yaml"
+  file_permission = "0600"
 
-  count = var.enabled_dev_cluster ? 1 : 0
-  source = "./modules/kubernetes-cluster"
-  environment = "dev"
-  username = var.username
-  template_id = var.template_id
-  kubernetes_nodes = var.kubernetes_nodes_dev
-  ssh_key = var.ssh_key
-  gateway = var.gateway
-  proxmox_node = var.proxmox_node
+  content = templatefile("${path.module}/../k0s/k0sctl.yaml.tftpl", {
+    cluster_name         = "mini-k0s-${module.k8s_cluster.cluster_name}"
+    ssh_user             = var.username
+    ssh_private_key_path = var.ssh_private_key_path
+    k0s_version          = var.k0s_version
+    nodes                = var.kubernetes_nodes
+  })
 }
 
 resource "terraform_data" "k0s_bootstrap" {
-  depends_on = [module.k8s_cluster_prod]
+  depends_on = [module.k8s_cluster, local_file.k0sctl_config]
+
+  triggers_replace = [
+    local_file.k0sctl_config.content
+  ]
 
   provisioner "local-exec" {
     command = "bash ${abspath("${path.module}/../k0s/k0s_init.sh")}"
     environment = {
-      MANIFEST_PATH = abspath("${path.module}/../k0s/k0sctl.yaml")
-      CLUSTER_NAME = "mini-k0s-${module.k8s_cluster_prod.environment}"
-      SSH_PRIVATE_KEY_PATH = var.ssh_private_key_path
-      SSH_USER = var.username
-      CONTROLLER_IP = var.kubernetes_nodes_prod["control-plane"].ip
-      WORKER1_IP = var.kubernetes_nodes_prod["worker-1"].ip
-      WORKER2_IP = var.kubernetes_nodes_prod["worker-2"].ip
-      WORKER3_IP = var.kubernetes_nodes_prod["worker-3"].ip
+      MANIFEST_PATH = abspath(local_file.k0sctl_config.filename)
+      CLUSTER_NAME  = "mini-k0s-${module.k8s_cluster.cluster_name}"
+      NODE_IPS      = join(",", module.k8s_cluster.all_ips)
+      SSH_USER      = var.username
+      SSH_KEY_PATH  = var.ssh_private_key_path
+      DEBUG         = true
     }
   }
 }

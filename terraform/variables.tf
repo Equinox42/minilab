@@ -1,7 +1,3 @@
-variable "enabled_dev_cluster" {
-  type = bool
-}
-
 variable "api_token" {
   description = "Proxmox API token for authentication"
   type        = string
@@ -43,40 +39,19 @@ variable "gateway" {
 variable "username" {
   type        = string
 }
-
-variable "gitea_host_mem" {
-  description = "Memory allocated to Gitea instance"
-  type        = number
-  default     = 2048
+variable "kubernetes_nodes" {
+  type = map(object({
+    ip     = string
+    cpu    = number
+    memory = number
+    role   = string  
+  }))
 }
 
-variable "gitea_host_cpu" {
-  description = "CPU allocated to Gitea instance"
-  type        = number
-  default     = 2
-}
-
-variable "gitea_host_ip" {
-  description = "IP address of the Gitea host"
+variable "k0s_version" {
+  description = "Version of k0s to deploy"
   type        = string
-}
-
-variable "kubernetes_nodes_prod" {
-  description = "Nodes Configuration"
-  type = map(object({
-    ip     = string
-    cpu    = number
-    memory = number
-  }))
-}
-
-variable "kubernetes_nodes_dev" {
-  description = "Nodes Configuration"
-  type = map(object({
-    ip     = string
-    cpu    = number
-    memory = number
-  }))
+  default     = "v1.34.2+k0s.0"
 }
 
 variable "ssh_private_key_path" {
