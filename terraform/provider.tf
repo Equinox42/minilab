@@ -4,6 +4,11 @@ terraform {
       source  = "bpg/proxmox"
       version = "0.78.2"
     }
+
+    local = {
+      source  = "hashicorp/local"
+      version = "2.8.0"
+    }
     helm = {
       source  = "hashicorp/helm"
       version = "3.1.1"
