@@ -21,6 +21,8 @@ resource "local_file" "k0sctl_config" {
     ssh_private_key_path = var.ssh_private_key_path
     k0s_version          = var.k0s_version
     nodes                = var.kubernetes_nodes
+    proxmox_csi_region = var.proxmox_csi_region
+    proxmox_csi_zone   = var.proxmox_csi_zone
   })
 }
 

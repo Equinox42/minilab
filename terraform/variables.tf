@@ -54,6 +54,16 @@ variable "k0s_version" {
   default     = "v1.34.2+k0s.0"
 }
 
+variable "proxmox_csi_region" {
+  description = "Proxmox cluster name used as the topology region label for the Proxmox CSI driver (topology.kubernetes.io/region)"
+  type = string
+}
+
+variable "proxmox_csi_zone" {
+  description = "Proxmox node name used as the topology zone label for the Proxmox CSI driver (topology.kubernetes.io/zone)"
+  type = string
+}
+
 variable "ssh_private_key_path" {
   description = "path to private key used by k0sctl for boostraping kubernetes cluster"
   type = string
