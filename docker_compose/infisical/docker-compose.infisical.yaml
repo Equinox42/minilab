@@ -1,0 +1,65 @@
+services:
+
+  backend:
+    container_name: infisical-backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    image: infisical/infisical@sha256:c57396e1e52bf9de240c53ffb19173b55c2e5c98cf921128e4c5c8338d6317a4
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.infisical.entrypoints=websecure"
+      - "traefik.http.services.infisical.loadbalancer.server.port=8080"
+      - "traefik.http.routers.infisical.rule=Host(`infisical.40cat-not-found.tech`)"
+      - "traefik.http.routers.infisical.tls.certresolver=cloudflare"
+    env_file: .env
+    environment:
+      - NODE_ENV=production
+    networks:
+      - proxy
+      - internal
+
+  redis:
+    image: redis:8.4.2-alpine@sha256:e1b6db24cb4fdd89f4bc9be09f671ea3bec92fbd7042554f76c34aa2be9b59ad
+    container_name: infisical-redis
+    env_file: .env
+    restart: always
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+    command: redis-server --requirepass ${REDIS_PASSWORD}
+    networks:
+      - internal
+    volumes:
+      - redis_data:/data
+
+  db:
+    container_name: infisical-db
+    image: postgres:14-alpine@sha256:bc06a4b2c6e50e3a9b7638fe7d3064d4497c89b3ce5e45a0bbc1124af6958adf
+    restart: always
+    env_file: .env
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - internal
+    healthcheck:
+      test: "pg_isready --username=${POSTGRES_USER} && psql --username=${POSTGRES_USER} --list"
+      interval: 5s
+      timeout: 10s
+      retries: 10
+
+volumes:
+  pg_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  proxy:
+    external: true
+    name: proxy
+  internal:
+    internal: true
+    

@@ -1,0 +1,29 @@
+services:
+
+  traefik:
+    image: traefik:v3.6
+    container_name: traefik
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
+    env_file: .env
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik.yml:/etc/traefik/traefik.yml:ro
+      - traefik_certs:/ssl-certs
+    networks:
+      - proxy
+
+volumes:
+  traefik_certs:
+    driver: local
+
+networks:
+  proxy:
+    name: proxy
+

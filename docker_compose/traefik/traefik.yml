@@ -1,0 +1,41 @@
+global:
+  CheckNewVersion: false
+  sendAnonymousUsage: false
+
+api:
+  dashboard: false
+
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+    network: proxy
+
+entryPoints:
+  web:
+    address: ":80"
+    http:
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+          permanent: true
+  websecure:
+    address: ":443"
+
+certificatesResolvers:
+  cloudflare:
+    acme:
+      email: infra@40cat-not-found.tech
+      storage: /ssl-certs/acme.json
+      dnsChallenge:
+        provider: cloudflare
+        resolvers:
+          - "1.1.1.1:53"
+          - "8.8.8.8:53"
+        delayBeforeCheck: 10
+
+accessLog: {}
+
+log:
+  level: DEBUG
