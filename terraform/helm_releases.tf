@@ -42,7 +42,7 @@ resource "kubernetes_manifest" "metallb_l2_adv" {
 }
 
 resource "helm_release" "cert-manager" {
-  depends_on = [kubernetes_manifest.metallb_l2_adv]
+  depends_on       = [kubernetes_manifest.metallb_l2_adv]
   timeout          = 600
   name             = "certmanager"
   repository       = "https://charts.jetstack.io"
@@ -60,7 +60,7 @@ resource "helm_release" "cert-manager" {
 }
 
 resource "helm_release" "argocd" {
-  depends_on = [helm_release.cert-manager]
+  depends_on       = [helm_release.cert-manager]
   atomic           = true
   name             = "argocd"
   repository       = "https://argoproj.github.io/argo-helm"

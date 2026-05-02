@@ -1,7 +1,7 @@
 module "k8s_cluster" {
   source = "./modules/kubernetes-cluster"
-  
-  cluster_name = "management"
+
+  cluster_name     = "management"
   username         = var.username
   template_id      = var.template_id
   kubernetes_nodes = var.kubernetes_nodes
@@ -12,7 +12,7 @@ module "k8s_cluster" {
 
 
 resource "local_file" "k0sctl_config" {
-  filename = "${path.module}/../k0s/generated/k0sctl-${module.k8s_cluster.cluster_name}.yaml"
+  filename        = "${path.module}/../k0s/generated/k0sctl-${module.k8s_cluster.cluster_name}.yaml"
   file_permission = "0600"
 
   content = templatefile("${path.module}/../k0s/k0sctl.yaml.tftpl", {
@@ -21,8 +21,8 @@ resource "local_file" "k0sctl_config" {
     ssh_private_key_path = var.ssh_private_key_path
     k0s_version          = var.k0s_version
     nodes                = var.kubernetes_nodes
-    proxmox_csi_region = var.proxmox_csi_region
-    proxmox_csi_zone   = var.proxmox_csi_zone
+    proxmox_csi_region   = var.proxmox_csi_region
+    proxmox_csi_zone     = var.proxmox_csi_zone
   })
 }
 

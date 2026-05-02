@@ -19,7 +19,7 @@ variable "kubernetes_nodes" {
         ...
       }
   EOF
-    type = map(object({
+  type = map(object({
     ip        = string
     cpu       = number
     memory    = number
@@ -48,13 +48,13 @@ variable "kubernetes_nodes" {
 }
 variable "template_id" {
   description = "Template VM ID to clone"
-  type = number
+  type        = number
 }
 
 variable "ssh_key" {
   description = "SSH public key to inject into the VM"
-  type      = string
-  sensitive = true
+  type        = string
+  sensitive   = true
 }
 
 variable "username" {
@@ -64,7 +64,7 @@ variable "username" {
 
 variable "gateway" {
   description = "IP of the gateway"
-  type = string
+  type        = string
 }
 
 variable "datastore_id" {

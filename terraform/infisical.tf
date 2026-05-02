@@ -1,9 +1,9 @@
 resource "proxmox_virtual_environment_vm" "infisical" {
 
 
-  name = "Infisical"
+  name        = "Infisical"
   description = "Infisical - Vault for Secrets"
-  tags = concat(["Infisical"])
+  tags        = concat(["Infisical"])
   node_name   = var.proxmox_node
   started     = true
 
@@ -20,9 +20,9 @@ resource "proxmox_virtual_environment_vm" "infisical" {
   }
 
   memory {
-    dedicated = var.infisical_memory    
+    dedicated = var.infisical_memory
   }
-  
+
   disk {
     datastore_id = "local-lvm"
     interface    = "scsi0"
@@ -31,7 +31,7 @@ resource "proxmox_virtual_environment_vm" "infisical" {
   }
 
   agent {
-   enabled = false
+    enabled = false
   }
 
   initialization {
@@ -56,7 +56,7 @@ resource "proxmox_virtual_environment_vm" "infisical" {
   }
 
   lifecycle {
-    ignore_changes = [description]
+    ignore_changes  = [description]
     prevent_destroy = true
   }
 }

@@ -37,14 +37,14 @@ variable "gateway" {
 }
 
 variable "username" {
-  type        = string
+  type = string
 }
 variable "kubernetes_nodes" {
   type = map(object({
     ip     = string
     cpu    = number
     memory = number
-    role   = string  
+    role   = string
   }))
 }
 
@@ -56,17 +56,17 @@ variable "k0s_version" {
 
 variable "proxmox_csi_region" {
   description = "Proxmox cluster name used as the topology region label for the Proxmox CSI driver (topology.kubernetes.io/region)"
-  type = string
+  type        = string
 }
 
 variable "proxmox_csi_zone" {
   description = "Proxmox node name used as the topology zone label for the Proxmox CSI driver (topology.kubernetes.io/zone)"
-  type = string
+  type        = string
 }
 
 variable "ssh_private_key_path" {
   description = "path to private key used by k0sctl for boostraping kubernetes cluster"
-  type = string
+  type        = string
 }
 
 variable "metallb_adress_pool" {
@@ -81,7 +81,7 @@ variable "kubeconfig_path" {
 
 variable "argocd_server_address" {
   description = "ArgoCD server hostname"
-  type = string
+  type        = string
 }
 
 variable "argocd_server_username" {
@@ -89,6 +89,6 @@ variable "argocd_server_username" {
 }
 
 variable "argocd_server_password" {
-  type = string
+  type      = string
   sensitive = true
 }

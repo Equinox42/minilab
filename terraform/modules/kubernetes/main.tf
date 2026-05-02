@@ -2,9 +2,9 @@ resource "proxmox_virtual_environment_vm" "kubernetes_nodes" {
   for_each = var.kubernetes_nodes
 
 
-  name = "${var.cluster_name}-${each.key}"
+  name        = "${var.cluster_name}-${each.key}"
   description = "Kubernetes node for ${var.cluster_name} cluster - managed by Terraform"
-  tags = concat(["k0s", "debian", var.cluster_name, each.value.role], var.extra_tags)
+  tags        = concat(["k0s", "debian", var.cluster_name, each.value.role], var.extra_tags)
   node_name   = var.proxmox_node
   started     = true
 
@@ -31,7 +31,7 @@ resource "proxmox_virtual_environment_vm" "kubernetes_nodes" {
     size         = each.value.disk_size
   }
   agent {
-   enabled = false
+    enabled = false
   }
 
   initialization {
