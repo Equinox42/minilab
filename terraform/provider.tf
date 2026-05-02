@@ -9,6 +9,8 @@ terraform {
       source  = "hashicorp/local"
       version = "2.8.0"
     }
+
+    
     helm = {
       source  = "hashicorp/helm"
       version = "3.1.1"
@@ -31,6 +33,16 @@ provider "proxmox" {
   ssh {
     agent    = true
     username = "root"
+  }
+}
+
+provider "infisical" {
+  host = var.infisical_hostname
+  auth = {
+    universal = {
+      client_id     = var.infisical_client_id
+      client_secret = var.infisical_client_secret
+    }
   }
 }
 
