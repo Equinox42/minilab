@@ -5,4 +5,4 @@ metadata:
   namespace: default
 type: Opaque
 stringData:
-identityId: "ID of the machine identite used for external secrets operator"
+  identityId: "ID of the machine identite used for external secrets operator"
