@@ -103,4 +103,7 @@ Two Docker Compose stacks run side by side on the VM :
 - [`docker-compose.infisical.yaml`](./docker_compose/infisical/docker-compose.infisical.yaml) - the Infisical backend, with Redis for caching and PostgreSQL for storage.
 
 
+![infisical_vault_sketch](./images/infisical.png)
+
+
 > **Note**: These stacks are currently deployed manually. I plan to migrate them to Ansible playbooks for declarative provisioning. Ideally I'd like to run Infisical, PostgreSQL and as systemd units rather than containers.
