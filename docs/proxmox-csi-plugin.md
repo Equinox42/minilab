@@ -9,8 +9,8 @@ tldr :
 - Make sure to label the nodes of your Kubernetes cluster :
 
 ```bash
-kubectl label nodes region1-node-1 topology.kubernetes.io/region=#Proxmox Cluster Name
-kubectl label nodes region1-node-1 topology.kubernetes.io/zone=#Proxmox Node Name
+kubectl label nodes nodename topology.kubernetes.io/region=#Proxmox Cluster Name
+kubectl label nodes nodename topology.kubernetes.io/zone=#Proxmox Node Name
 ```
 
 
@@ -31,7 +31,7 @@ config:
       # Proxmox cluster name, find it in the webui > Datacenter > Cluster > Cluster-Information
       region: ""
 
-# Define the storage classes
+# Define the storage classes see https://github.com/sergelogvinov/proxmox-csi-plugin#storage-class-definition
 storageClass:
   - name: proxmox-data-xfs
   # See Datacenter > Storage
@@ -49,5 +49,6 @@ node:
 
 ```bash
 kubectl create namespace csi-proxmox
+kubectl label namespace csi-proxmox pod-security.kubernetes.io/enforce=privileged
 helm upgrade -i -n csi-proxmox -f proxmox-csi-values.yaml proxmox-csi-plugin oci://ghcr.io/sergelogvinov/charts/proxmox-csi-plugin
 ```
