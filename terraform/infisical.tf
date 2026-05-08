@@ -61,6 +61,7 @@ resource "proxmox_virtual_environment_vm" "infisical" {
 }
 
 data "http" "infisical_health" {
+  depends_on = [proxmox_virtual_environment_vm.infisical]
   url = "${var.infisical_hostname}/api/status"
 
   retry {
@@ -107,9 +108,39 @@ resource "infisical_secret" "cloudflare_token" {
   value_wo = var.infisical_cloudflare_token
   value_wo_version = 1
   folder_path  = "/"
-
   lifecycle {
-    ignore_changes = [value_wo]
+    prevent_destroy = true
   }
 }
 
+resource "infisical_secret" "proxmox_csi_token" {
+  name         = "proxmox_csi_token"
+  env_slug     = "prod"
+  workspace_id = infisical_project.kubernetes_project.id
+  value_wo = proxmox_virtual_environment_user_token.csi.value
+  value_wo_version = 1
+  folder_path  = "/"
+    lifecycle {
+    prevent_destroy = true
+  }
+}
+
+data "kubernetes_secret_v1" "token_reviewer" {
+  depends_on = [kubectl_manifest.token_reviewer]
+  metadata {
+    name      = "infisical-token-reviewer-token"
+    namespace = "infisical-auth"
+  }
+}
+
+resource "infisical_identity_kubernetes_auth" "this" {
+  identity_id               = infisical_identity.eso.id
+  kubernetes_host           = "https://${module.k8s_cluster.control_plane_ip}:6443"
+  token_reviewer_jwt        = data.kubernetes_secret_v1.token_reviewer.data["token"]
+  kubernetes_ca_certificate = trimspace(data.kubernetes_secret_v1.token_reviewer.data["ca.crt"])
+  allowed_namespaces            = ["external-secrets"]
+  allowed_service_account_names = ["external-secrets"]
+  access_token_ttl              = 2592000
+  access_token_max_ttl          = 2592000
+  token_reviewer_mode = "api"
+}
