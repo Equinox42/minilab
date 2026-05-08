@@ -34,3 +34,8 @@ resource "proxmox_virtual_environment_acl" "csi" {
   path      = "/"
   propagate = true
 }
+
+output "csi_token_value" {
+  value     = proxmox_virtual_environment_user_token.csi.value
+  sensitive = true
+}
