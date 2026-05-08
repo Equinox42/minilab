@@ -4,24 +4,25 @@ terraform {
       source  = "bpg/proxmox"
       version = "0.78.2"
     }
-
-    local = {
-      source  = "hashicorp/local"
-      version = "2.8.0"
+    infisical = {
+      source  = "infisical/infisical"
+      version = "0.16.21"
     }
-
-    
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = "1.19.0"
+    }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = "3.1.0"
+    }
     helm = {
       source  = "hashicorp/helm"
       version = "3.1.1"
     }
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "3.0.1"
-    }
-    argocd = {
-      source  = "argoproj-labs/argocd"
-      version = "7.13.0"
+    local = {
+      source  = "hashicorp/local"
+      version = "2.8.0"
     }
   }
 }
@@ -46,15 +47,12 @@ provider "infisical" {
   }
 }
 
-provider "kubernetes" {
-  config_path = var.kubeconfig_path
-}
+provider local {}
+provider "kubectl" { config_path = var.kubeconfig_path } 
+provider "kubernetes" { config_path = var.kubeconfig_path } 
+provider "helm" {}
 
-provider "helm" {
-  kubernetes = {
-    config_path = var.kubeconfig_path
-  }
-}
+
 
 provider "argocd" {
   server_addr = var.argocd_server_address
