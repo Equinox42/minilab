@@ -41,24 +41,6 @@ resource "kubernetes_manifest" "metallb_l2_adv" {
   }
 }
 
-resource "helm_release" "cert-manager" {
-  depends_on       = [kubernetes_manifest.metallb_l2_adv]
-  timeout          = 600
-  name             = "certmanager"
-  repository       = "https://charts.jetstack.io"
-  chart            = "cert-manager"
-  version          = "1.19.4"
-  namespace        = "cert-manager"
-  create_namespace = true
-
-  set = [
-    {
-      name  = "crds.enabled"
-      value = "true"
-    }
-  ]
-}
-
 resource "helm_release" "argocd" {
   depends_on       = [helm_release.cert-manager]
   atomic           = true
