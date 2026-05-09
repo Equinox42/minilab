@@ -1,0 +1,13 @@
+existingConfigSecret: proxmox-csi-plugin-config
+
+storageClass:
+  - name: proxmox-lvm-xfs
+    storage: local-lvm
+    reclaimPolicy: Delete
+    fstype: xfs
+    ssd: true 
+    annotations:
+      storageclass.kubernetes.io/is-default-class: "true"
+
+node:
+  kubeletDir: /var/lib/k0s/kubelet

@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: proxmox-csi-plugin
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  sources:
+    - repoURL: ghcr.io/sergelogvinov/charts
+      chart: proxmox-csi-plugin
+      targetRevision: 0.5.7
+      helm:
+        releaseName: proxmox-csi-plugin
+        valueFiles:
+          - $values/platform/proxmox-csi-plugin/proxmox-csi-plugin-values.yaml
+    - repoURL: https://github.com/Equinox42/minilab
+      targetRevision: main
+      ref: values
+    - repoURL: https://github.com/Equinox42/minilab
+      targetRevision: main
+      path: ./platform/proxmox-csi-plugin/manifests
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: csi-proxmox 
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - ServerSideApply=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
