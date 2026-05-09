@@ -117,7 +117,7 @@ resource "infisical_secret" "proxmox_csi_token" {
   name         = "proxmox_csi_token"
   env_slug     = "prod"
   workspace_id = infisical_project.kubernetes_project.id
-  value_wo = proxmox_virtual_environment_user_token.csi.value
+  value_wo = split("=", proxmox_virtual_environment_user_token.csi.value)[1]
   value_wo_version = 1
   folder_path  = "/"
     lifecycle {
