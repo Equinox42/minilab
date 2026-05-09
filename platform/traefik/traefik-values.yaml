@@ -1,0 +1,14 @@
+providers:
+  kubernetesCRD:
+    enabled: true
+  kubernetesIngress:
+    enabled: true
+  kubernetesGateway:
+    enabled: false
+  # Setting this to false since default value make the app appear to be in status degraded in argocd and i'm not using kubernetes Gateway API
+gateway:
+  # -- When providers.kubernetesGateway.enabled, deploy a default gateway
+  enabled: false
+gatewayClass:
+  # -- When providers.kubernetesGateway.enabled and gateway.enabled, deploy a default gatewayClass
+  enabled: false
