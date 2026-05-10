@@ -107,3 +107,9 @@ Two Docker Compose stacks run side by side on the VM :
 
 
 > **Note**: These stacks are currently deployed manually. I plan to migrate them to Ansible playbooks for declarative provisioning. Ideally I'd like to run Infisical, PostgreSQL and as systemd units rather than containers.
+
+## Boostraping applications with Argocd
+
+wip
+
+![bootstrap_argocd](./images/bootstrap_argocd.png)
