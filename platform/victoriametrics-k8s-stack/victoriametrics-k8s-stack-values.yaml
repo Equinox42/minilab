@@ -1,0 +1,66 @@
+victoria-metrics-operator:
+  enabled: true
+  crds:
+    plain: true
+    cleanup:
+      enabled: true
+      image:
+        repository: rancher/kubectl
+        pullPolicy: IfNotPresent
+  serviceMonitor:
+    enabled: true
+  operator:
+    disable_prometheus_converter: false
+
+defaultDashboards:
+  enabled: true
+  defaultTimezone: Europe/Paris
+  dashboards:
+    victoriametrics-vmalert:
+      enabled: true
+    victoriametrics-operator:
+      enabled: true
+
+defaultRules:
+  create: true
+
+vmsingle:
+  enabled: true
+  spec:
+    retentionPeriod: "2w"
+    storage:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 15Gi
+
+alertmanager:
+  enabled: true
+
+vmalert:
+  enabled: true
+
+vmagent:
+  enabled: true
+
+grafana:
+  enabled: true
+  persistence:
+    type: pvc
+    enabled: true
+  ingress:
+    enabled: true
+    ingressClassName: traefik
+    hosts:
+      - grafana.40cat-not-found.tech
+    tls:
+     - secretName: grafana-ingress-tls
+       hosts:
+         - grafana.40cat-not-found.tech
+
+prometheus-node-exporter:
+  enabled: true
+
+kube-state-metrics:
+  enabled: true
