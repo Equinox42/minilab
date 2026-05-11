@@ -52,6 +52,9 @@ grafana:
   ingress:
     enabled: true
     ingressClassName: traefik
+    annotations:
+      cert-manager.io/cluster-issuer: "cloudflare" 
+      traefik.ingress.kubernetes.io/router.tls: "true"
     hosts:
       - grafana.40cat-not-found.tech
     tls:
