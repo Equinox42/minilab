@@ -105,11 +105,25 @@ Two Docker Compose stacks run side by side on the VM :
 
 ![infisical_vault_sketch](./images/infisical.png)
 
-
 > **Note**: These stacks are currently deployed manually. I plan to migrate them to Ansible playbooks for declarative provisioning. Ideally I'd like to run Infisical, PostgreSQL and as systemd units rather than containers.
 
-## Boostraping applications with Argocd
+Once Infisical is running, I manage its resources with the [Infisical Terraform provider](https://registry.terraform.io/providers/Infisical/infisical/latest). 
 
-wip
+Secrets are created with `infisical_secret` using the `value_wo` (write-only) argument, so their values are never stored in the Terraform state.
+
+## Bootstrapping Applications with ArgoCD
+
+ArgoCD is installed by Terraform via `helm_release`, then a root Application is deployed with `kubectl_manifest`. This root Application follows the **App-of-Apps pattern**: it points to a directory containing all the other ArgoCD Application manifests.
+
+Each Application is annotated with sync-waves to ensure the correct deployment order:
+
+- **Wave 0**: External Secrets Operator, MetalLB : these two charts don't have any dependancies. 
+
+- **Wave 1**: cert-manager, Proxmox CSI, Traefik : these charts either depend on ESO for secrets synchronization or MetalLB for LoadBalancer IPs
+
+- **Wave 2**: ArgoCD self-managed, it update itself with final values (Ingress, TLS, etc.)
+
 
 ![bootstrap_argocd](./images/bootstrap_argocd.png)
+
+Once bootstrapped, all changes to the applications go through Git. Terraform no longer touches anything inside the cluster.
