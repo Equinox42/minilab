@@ -8,6 +8,7 @@ module "k8s_cluster" {
   ssh_key          = var.ssh_key
   gateway          = var.gateway
   proxmox_node     = var.proxmox_node
+  nameservers      = var.nameservers
 }
 
 
@@ -47,10 +48,10 @@ resource "terraform_data" "k0s_bootstrap" {
 }
 
 locals {
-  token_reviewer_manifest = ["infisical-namespace.yaml","infisical-identity.yaml","infisical-token-reviewer-sa.yaml","infisical-token-reviewer-binding.yaml", "infisical-token-reviewer-secret.yaml"]
+  token_reviewer_manifest = ["infisical-namespace.yaml", "infisical-identity.yaml", "infisical-token-reviewer-sa.yaml", "infisical-token-reviewer-binding.yaml", "infisical-token-reviewer-secret.yaml"]
 }
 
 resource "kubectl_manifest" "token_reviewer" {
-  for_each = toset(local.token_reviewer_manifest)
+  for_each  = toset(local.token_reviewer_manifest)
   yaml_body = file("${path.module}/../kubernetes/infisical/${each.value}")
 }

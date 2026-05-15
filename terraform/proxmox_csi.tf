@@ -21,14 +21,14 @@ resource "proxmox_virtual_environment_user" "kubernetes" {
   user_id = "kubernetes-csi@pve"
 }
 
-resource "proxmox_virtual_environment_user_token" "csi" {
+resource "proxmox_user_token" "csi" {
   comment    = "Kubernetes CSI"
   token_name = "csi"
   user_id    = proxmox_virtual_environment_user.kubernetes.user_id
 }
 
-resource "proxmox_virtual_environment_acl" "csi" {
-  token_id = proxmox_virtual_environment_user_token.csi.id
+resource "proxmox_acl" "csi" {
+  token_id = proxmox_user_token.csi.id
   role_id  = proxmox_virtual_environment_role.csi.role_id
 
   path      = "/"
@@ -36,6 +36,6 @@ resource "proxmox_virtual_environment_acl" "csi" {
 }
 
 output "csi_token_value" {
-  value     = proxmox_virtual_environment_user_token.csi.value
+  value     = proxmox_user_token.csi.value
   sensitive = true
 }

@@ -1,10 +1,9 @@
-resource "proxmox_virtual_environment_vm" "kubernetes_nodes" {
-  for_each = var.kubernetes_nodes
+resource "proxmox_virtual_environment_vm" "virtual_machines" {
+  for_each = var.virtual_machines
 
-
-  name        = "${var.cluster_name}-${each.key}"
-  description = "Kubernetes node for ${var.cluster_name} cluster - managed by Terraform"
-  tags        = concat(["k0s", "debian", var.cluster_name, each.value.role], var.extra_tags)
+  name        = each.value.name
+  description = "each.value.name - managed by Terraform"
+  tags        = [each.value.name]
   node_name   = var.proxmox_node
   started     = true
 
@@ -53,9 +52,5 @@ resource "proxmox_virtual_environment_vm" "kubernetes_nodes" {
 
   operating_system {
     type = "l26"
-  }
-
-  lifecycle {
-    ignore_changes = [description]
   }
 }

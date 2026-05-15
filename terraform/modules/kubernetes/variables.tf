@@ -73,6 +73,11 @@ variable "datastore_id" {
   default     = "local-lvm"
 }
 
+variable "nameservers" {
+  type    = list(string)
+  default = ["1.1.1.1", "8.8.8.8"]
+}
+
 variable "extra_tags" {
   description = "Additional tags to apply to VMs"
   type        = list(string)

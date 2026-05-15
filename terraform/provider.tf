@@ -2,7 +2,11 @@ terraform {
   required_providers {
     proxmox = {
       source  = "bpg/proxmox"
-      version = "0.78.2"
+      version = "0.106.0"
+    }
+    local = {
+      source  = "hashicorp/local"
+      version = "2.9.0"
     }
     infisical = {
       source  = "infisical/infisical"
@@ -19,10 +23,6 @@ terraform {
     helm = {
       source  = "hashicorp/helm"
       version = "3.1.1"
-    }
-    local = {
-      source  = "hashicorp/local"
-      version = "2.8.0"
     }
   }
 }
@@ -47,15 +47,11 @@ provider "infisical" {
   }
 }
 
-provider local {}
 provider "kubectl" { config_path = var.kubeconfig_path } 
 provider "kubernetes" { config_path = var.kubeconfig_path } 
-provider "helm" {}
 
-
-
-provider "argocd" {
-  server_addr = var.argocd_server_address
-  username    = var.argocd_server_username
-  password    = var.argocd_server_password
+provider "helm" {
+  kubernetes = {
+    config_path = var.kubeconfig_path
+  }
 }
