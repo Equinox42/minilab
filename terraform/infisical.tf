@@ -16,7 +16,6 @@ data "http" "infisical_health" {
 }
 
 resource "infisical_project" "kubernetes_project" {
-  depends_on = [data.http.infisical_health]
   name       = "kubernetes-secrets"
   slug       = "kubernetes-secrets"
   type       = "secret-manager"
@@ -39,29 +38,7 @@ resource "infisical_project_identity" "eso" {
   ]
 }
 
-resource "infisical_secret" "cloudflare_token" {
-  name             = "cloudflare_token"
-  env_slug         = "prod"
-  workspace_id     = infisical_project.kubernetes_project.id
-  value_wo         = var.infisical_cloudflare_token
-  value_wo_version = 1
-  folder_path      = "/"
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
-resource "infisical_secret" "proxmox_csi_token" {
-  name             = "proxmox_csi_token"
-  env_slug         = "prod"
-  workspace_id     = infisical_project.kubernetes_project.id
-  value_wo         = split("=", proxmox_user_token.csi.value)[1]
-  value_wo_version = 2
-  folder_path      = "/"
-  lifecycle {
-    prevent_destroy = true
-  }
-}
+// External Secrets Operator Auth
 
 data "kubernetes_secret_v1" "token_reviewer" {
   depends_on = [kubectl_manifest.token_reviewer]
@@ -81,5 +58,55 @@ resource "infisical_identity_kubernetes_auth" "this" {
   access_token_ttl              = 2592000
   access_token_max_ttl          = 2592000
   token_reviewer_mode           = "api"
+}
+
+// Secrets
+
+resource "infisical_secret" "cloudflare_token" {
+  name             = "cloudflare_token"
+  env_slug         = "prod"
+  workspace_id     = infisical_project.kubernetes_project.id
+  value_wo         = var.infisical_cloudflare_token
+  value_wo_version = 1
+  folder_path      = "/"
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "infisical_secret" "proxmox_endpoint" {
+  name             = "proxmox_endpoint"
+  env_slug         = "prod"
+  workspace_id     = infisical_project.kubernetes_project.id
+  value_wo         = var.proxmox_endpoint
+  value_wo_version = 1
+  folder_path      = "/"
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "infisical_secret" "proxmox_csi_token" {
+  name             = "proxmox_csi_token"
+  env_slug         = "prod"
+  workspace_id     = infisical_project.kubernetes_project.id
+  value_wo         = split("=", proxmox_user_token.csi.value)[1]
+  value_wo_version = 2
+  folder_path      = "/"
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "infisical_secret" "proxmox_homepage_token" {
+  name             = "proxmox_homepage_token"
+  env_slug         = "prod"
+  workspace_id     = infisical_project.kubernetes_project.id
+  value_wo         = split("=", proxmox_user_token.homepage.value)[1]
+  value_wo_version = 2
+  folder_path      = "/"
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
