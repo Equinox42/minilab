@@ -1,0 +1,29 @@
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: homepage-proxmox-config
+  namespace: homepage
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: infisical-store
+    kind: ClusterSecretStore
+  target:
+    name: homepage-proxmox-config
+    creationPolicy: Owner
+    template:
+      engineVersion: v2
+      type: Opaque
+      data:
+        proxmox.yaml: |
+          proxmox:
+            url: {{ .proxmoxEndpoint | trimSuffix "/" }}
+            token: homepage@pve!homepage
+            secret: {{ .ProxmoxTokenSecret }}
+  data:
+    - secretKey: proxmoxEndpoint
+      remoteRef:
+        key: proxmox_endpoint
+    - secretKey: ProxmoxTokenSecret
+      remoteRef: 
+        key: proxmox_homepage_token

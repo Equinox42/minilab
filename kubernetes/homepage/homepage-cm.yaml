@@ -1,0 +1,98 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: homepage
+  namespace: homepage
+  labels:
+    app.kubernetes.io/name: homepage
+data:
+  kubernetes.yaml: |
+    mode: cluster
+    ingress: true
+    traefik: true
+  settings.yaml: |
+    background: 
+      image: https://images.unsplash.com/photo-1520529890308-f503006340b4?q=80&w=2667&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
+    language: fr
+    cardBlur: xs 
+  custom.css: ""
+  custom.js: ""
+  bookmarks.yaml: |
+    - DevOps:
+        - Zwindler:
+            - icon: https://blog.zwindler.fr/favicon.ico
+              href: https://blog.zwindler.fr/
+        - Une-tasse-de-café:
+            - icon: https://une-tasse-de.cafe/favicon-32x32.png
+              href: https://une-tasse-de.cafe/
+        - Aurélie Vache:
+            - icon: https://dev.to/favicon.ico
+              href: https://dev.to/aurelievache
+        - Julien Hommet:
+            - icon: https://j.hommet.net/favicon.ico
+              href: https://j.hommet.net/
+        - Cockpitio:
+            - icon: kubernetes.png
+              href: https://blog.cockpitio.com/
+    - Social:
+        - Reddit:
+            - icon: reddit.png
+              href: https://reddit.com/
+        - LyonTechHub:
+            - icon: https://www.lyontechhub.org/imgs/logo/LyonTechHub-32-red.png
+              href: https://www.lyontechhub.org/calendar/
+    - Learning:
+        - Iximiuz:
+            - icon: https://labs.iximiuz.com/favicon.ico
+              href: https://labs.iximiuz.com
+        - Xavki: 
+            - icon: youtube.png
+              href: https://www.youtube.com/c/xavki-linux
+        - Udemy:
+            - icon: udemy.png
+              href: https://skolae.udemy.com
+        - DevHints:
+            - icon: https://devhints.io/assets/favicon.png
+              href: https://devhints.io/
+  services.yaml: |
+    - Kubernetes:
+        - ArgoCD:
+            icon: argo-cd.png
+            href: https://argocd.40cat-not-found.tech
+            siteMonitor: https://argocd.40cat-not-found.tech
+        - Grafana:
+            icon: grafana.png
+            href: https://grafana.40cat-not-found.tech
+            siteMonitor: https://grafana.40cat-not-found.tech
+    - Docker :
+        - Infisical:
+            icon: si-infinityfree-#0D0E12
+            href: https://infisical.40cat-not-found.tech
+            proxmoxNode: proxmox
+            proxmoxVMID: 102
+    - VirtualMachines:
+        - ADGuardHome:
+            icon: adguard-home.png
+            href: http://adguard.40cat-not-found.tech
+  widgets.yaml: |
+    - datetime:
+        locale: fr
+        format:
+          timeStyle: short
+          dateStyle: long
+    - kubernetes:
+        cluster:
+          show: false
+          cpu: true
+          memory: true
+          showLabel: true
+          label: "cluster"
+        nodes:
+          show: false
+          cpu: true
+          memory: true
+          showLabel: true
+    - search:
+        provider: google
+        target: _blank
+  docker.yaml: ""
