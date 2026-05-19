@@ -17,6 +17,10 @@ applicationSet:
   replicas: 1
 
 configs:
+  cm:
+    accounts.homepage: apiKey
+  rbac:
+    policy.csv: "g, homepage, role:readonly"
   params:
     server.insecure: true
 
