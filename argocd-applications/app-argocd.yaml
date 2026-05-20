@@ -23,10 +23,8 @@ spec:
     namespace: argocd
   syncPolicy:
     automated:
-      prune: true
+      prune: false
       selfHeal: true
-    syncOptions:
-      - ServerSideApply=true
     retry:
       limit: 5
       backoff:
