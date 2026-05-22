@@ -4,7 +4,7 @@ This repository documents my homelab setup. The infrastructure I run, the tools 
 It's a sandbox where I can experiment with differents cloud native technologies. 
 
 
-## Tech Stack 
+## Current Services Stack
 
 <table>
     <tr>
@@ -87,6 +87,7 @@ It's a sandbox where I can experiment with differents cloud native technologies.
         <td><a href="https://gethomepage.dev/">Homepage</a></td>
         <td>Highly customizable application dashboard</td>
     </tr>
+</table>
 
 ## Infrastructure
 
@@ -129,6 +130,19 @@ variable "kubernetes_nodes" {
   }))
 }
 ```
+
+### Handling Sensitive Variables
+
+I manage sensitive variables with the help of direnv, which automatically loads environment variables defined in a .envrc file when entering a directory.
+
+```bash
+# .envrc
+export TF_VAR_api_token="pve!terraform@pve!xxxxxxxx"
+export TF_VAR_proxmox_hostname="https://192.168.x.x:8006/"
+export TF_VAR_ssh_key="$(< ~/.ssh/id_rsa.pub)"
+```
+
+Read more at https://direnv.net/
 
 ### Cluster Bootstrapping (k0sctl)
 
@@ -174,19 +188,6 @@ resource "terraform_data" "k0s_bootstrap" {
 
 > **Note**: I'm aware that `local-exec` is generally considered an anti-pattern in Terraform as it breaks idempotency. I made this trade-off since I'm the only operator on this project. I'm planning to switch to either k0smotron or CAPI with a Proxmox infrastructure provider to provision additional clusters.
 
-## Handling Sensitive Variables
-
-I manage sensitive variables with the help of direnv, which automatically loads environment variables defined in a .envrc file when entering a directory.
-
-```bash
-# .envrc
-export TF_VAR_api_token="pve!terraform@pve!xxxxxxxx"
-export TF_VAR_proxmox_hostname="https://192.168.x.x:8006/"
-export TF_VAR_ssh_key="$(< ~/.ssh/id_rsa.pub)"
-```
-
-Read more at https://direnv.net/
-
 ## Secret Management with Infisical
 
 
@@ -225,11 +226,12 @@ Each Application is annotated with sync-waves to ensure the correct deployment o
 
 Once bootstrapped, all changes to the applications go through Git. Terraform no longer touches anything inside the cluster.
 
-
-## Storage with Proxmox CSI
+##  Storage with Proxmox CSI
 
 Persistent storage in the cluster is handled by the Proxmox CSI Plugin, a Container Storage Interface driver that provisions Kubernetes PersistentVolumes directly on Proxmox storage.
 
 I chose this solution because all my VMs run on the same physical node with a single SSD. Solutions like Longhorn or Rook-Ceph would provide high availability but the failure domain is the same regardless. 
 
 ![proxmox-csi](./images/proxmox-csi.png)
+
+
