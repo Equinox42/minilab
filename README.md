@@ -1,14 +1,99 @@
 ## Goals
 
-This repository has several purposes. First, it acts as a showcase of the technologies and practices I’m currently experimenting with, learning, and deploying in my homelab. 
+This repository documents my homelab setup. The infrastructure I run, the tools I use, and the decisions behind them.
+It's a sandbox where I can experiment with differents cloud native technologies. 
 
-It also serves as a structured place to document what I build and how I build it, it is a complement to my Obsidian vault, but in a format I can easily share.
+
+## Tech Stack 
+
+<table>
+    <tr>
+        <th>Logo</th>
+        <th>Name</th>
+        <th>Description</th>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://avatars.githubusercontent.com/u/2678585"></td>
+        <td><a href="https://www.proxmox.com">Proxmox VE</a></td>
+        <td>Open source hypervisor and virtualization platform</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/hashicorp-terraform.svg"></td>
+        <td><a href="https://developer.hashicorp.com/terraform">Terraform</a></td>
+        <td>Infrastructure as Code provisioning tool</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://avatars.githubusercontent.com/u/13629408"></td>
+        <td><a href="https://kubernetes.io">Kubernetes</a></td>
+        <td>Container-orchestration system</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://avatars.githubusercontent.com/u/72999283?s=200&v=4"></td>
+        <td><a href="https://k0sproject.io/">k0s</a></td>
+        <td>Lightweight single-binary Kubernetes distribution</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://helm.sh/img/helm.svg"></td>
+        <td><a href="https://helm.sh">Helm</a></td>
+        <td>Package manager and template engine for Kubernetes</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://avatars.githubusercontent.com/u/30269780"></td>
+        <td><a href="https://argoproj.github.io/cd">ArgoCD</a></td>
+        <td>GitOps continuous delivery tool for Kubernetes</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/traefik-proxy.svg"></td>
+        <td><a href="https://traefik.io/">Traefik</a></td>
+        <td>Cloud native reverse proxy and ingress controller</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://github.com/jetstack/cert-manager/raw/master/logo/logo.png"></td>
+        <td><a href="https://cert-manager.io">Cert-Manager</a></td>
+        <td>Cloud native certificate management</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://avatars.githubusercontent.com/u/68335991?s=200&v=4"></td>
+        <td><a href="https://external-secrets.io/">External Secrets Operator</a></td>
+        <td>Synchronizes secrets from external stores into Kubernetes</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/infisical.svg"></td>
+        <td><a href="https://infisical.com/">Infisical</a></td>
+        <td>Open source secret management platform</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://avatars.githubusercontent.com/u/8361145?s=200&v=4"></td>
+        <td><a href="https://adguard.com/adguard-home.html">AdGuard Home</a></td>
+        <td>Network-wide DNS ad blocking and local DNS resolver</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://grafana.com/static/img/menu/grafana2.svg"></td>
+        <td><a href="https://grafana.com">Grafana</a></td>
+        <td>Observability platform</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://github.com/grafana/loki/blob/main/docs/sources/logo.png?raw=true"></td>
+        <td><a href="https://grafana.com/oss/loki">Loki</a></td>
+        <td>Log aggregation system</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/victoriametrics-light.svg"></td>
+        <td><a href="https://victoriametrics.com/">VictoriaMetrics</a></td>
+        <td>Systems monitoring and alerting toolkit</td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://avatars.githubusercontent.com/u/122929872?s=200&v=4"></td>
+        <td><a href="https://gethomepage.dev/">Homepage</a></td>
+        <td>Highly customizable application dashboard</td>
+    </tr>
 
 ## Infrastructure
 
 My current homelab is built around a single physical node: a Minisforum UM870 equipped with 96GB of RAM, a AMD Ryzen 7 8745H and 1 TB SSD. 
 
 In the future i'd like to invest in a dedicated NAS. This will allow me to decouple my persistent data from the compute node.
+
 
 ## Provisioning & Bootstrapping Kubernetes Cluster
 
@@ -89,6 +174,18 @@ resource "terraform_data" "k0s_bootstrap" {
 
 > **Note**: I'm aware that `local-exec` is generally considered an anti-pattern in Terraform as it breaks idempotency. I made this trade-off since I'm the only operator on this project. I'm planning to switch to either k0smotron or CAPI with a Proxmox infrastructure provider to provision additional clusters.
 
+## Handling Sensitive Variables
+
+I manage sensitive variables with the help of direnv, which automatically loads environment variables defined in a .envrc file when entering a directory.
+
+```bash
+# .envrc
+export TF_VAR_api_token="pve!terraform@pve!xxxxxxxx"
+export TF_VAR_proxmox_hostname="https://192.168.x.x:8006/"
+export TF_VAR_ssh_key="$(< ~/.ssh/id_rsa.pub)"
+```
+
+Read more at https://direnv.net/
 
 ## Secret Management with Infisical
 
@@ -127,3 +224,12 @@ Each Application is annotated with sync-waves to ensure the correct deployment o
 ![bootstrap_argocd](./images/bootstrap_argocd.png)
 
 Once bootstrapped, all changes to the applications go through Git. Terraform no longer touches anything inside the cluster.
+
+
+## Storage with Proxmox CSI
+
+Persistent storage in the cluster is handled by the Proxmox CSI Plugin, a Container Storage Interface driver that provisions Kubernetes PersistentVolumes directly on Proxmox storage.
+
+I chose this solution because all my VMs run on the same physical node with a single SSD. Solutions like Longhorn or Rook-Ceph would provide high availability but the failure domain is the same regardless. 
+
+![proxmox-csi](./images/proxmox-csi.png)
