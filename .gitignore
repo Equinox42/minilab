@@ -1,6 +1,9 @@
 # Ignore direnv environment files
 .env*
 
+# Terraform tfvars
+*.tfvars
+
 # Terraform state
 *.tfstate
 *.tfstate.*
