@@ -1,5 +1,5 @@
 module "k8s_cluster" {
-  source = "./modules/kubernetes-cluster"
+  source = "./modules/kubernetes"
 
   cluster_name     = "management"
   username         = var.username
