@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: infisical-kubernetes-auth
-  namespace: infisical-auth
+  namespace: infisical-auth 
 type: Opaque
 stringData:
-  identityId: "ID of the machine identite used for external secrets operator"
+  identityId: "8b266752-d364-4a05-a8b0-66603ed66389"
