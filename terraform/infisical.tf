@@ -110,3 +110,26 @@ resource "infisical_secret" "proxmox_homepage_token" {
   }
 }
 
+resource "infisical_secret" "capmox_api_token" {
+  name             = "capmox_token"
+  env_slug         = "prod"
+  workspace_id     = infisical_project.kubernetes_project.id
+  value_wo         = split("=", proxmox_user_token.capmox.value)[1]
+  value_wo_version = 1
+  folder_path      = "/"
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "infisical_secret" "image_builder_token" {
+  name             = "image_builder_token"
+  env_slug         = "prod"
+  workspace_id     = infisical_project.kubernetes_project.id
+  value_wo         = split("=", proxmox_user_token.image_builder.value)[1]
+  value_wo_version = 1
+  folder_path      = "/"
+  lifecycle {
+    prevent_destroy = true
+  }
+}

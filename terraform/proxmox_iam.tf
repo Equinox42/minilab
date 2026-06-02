@@ -82,3 +82,84 @@ resource "proxmox_acl" "homepage" {
   path      = "/"
   propagate = true
 }
+
+// Image Builder
+
+resource "proxmox_virtual_environment_role" "image_builder" {
+  role_id = "image_builder"
+
+  privileges = [
+    # https://image-builder.sigs.k8s.io/capi/providers/proxmox
+    # Datastore.*
+    "Datastore.Allocate",
+    "Datastore.AllocateSpace",
+    "Datastore.AllocateTemplate",
+    "Datastore.Audit",
+
+    # SDN.*
+    "SDN.Allocate",
+    "SDN.Audit",
+    "SDN.Use",
+
+    # Sys
+    "Sys.AccessNetwork",
+    "Sys.Audit",
+
+    # VM.*
+    "VM.Allocate",
+    "VM.Audit",
+    "VM.Backup",
+    "VM.Clone",
+    "VM.Config.CDROM",
+    "VM.Config.Cloudinit",
+    "VM.Config.CPU",
+    "VM.Config.Disk",
+    "VM.Config.HWType",
+    "VM.Config.Memory",
+    "VM.Config.Network",
+    "VM.Config.Options",
+    "VM.Console",
+    "VM.Migrate",
+    "VM.PowerMgmt",
+    "VM.Snapshot",
+    "VM.Snapshot.Rollback",
+  ]
+}
+
+resource "proxmox_virtual_environment_user" "image_builder" {
+  acl {
+    path      = "/"
+    propagate = true
+    role_id   = proxmox_virtual_environment_role.image_builder.role_id
+  }
+
+  comment = "imagebuilder"
+  user_id = "imagebuilder@pve"
+}
+
+resource "proxmox_user_token" "image_builder" {
+  comment    = "image builder"
+  token_name = "imagebuilder"
+  user_id    = proxmox_virtual_environment_user.image_builder.user_id
+  privileges_separation = false
+}
+
+// Cluster API Proxmox
+
+resource "proxmox_virtual_environment_user" "capmox" {
+  user_id = "capmox@pve"
+  comment = "ClusterAPI Proxmox"
+
+  acl {
+    path      = "/"
+    propagate = true
+    role_id   = "PVEVMAdmin"
+  }
+}
+
+resource "proxmox_user_token" "capmox" {
+  comment    = "ClusterAPI Proxmox"
+  token_name = "capmox"
+  user_id    = proxmox_virtual_environment_user.capmox.user_id
+  privileges_separation = true 
+}
