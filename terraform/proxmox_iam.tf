@@ -87,40 +87,41 @@ resource "proxmox_acl" "homepage" {
 
 resource "proxmox_virtual_environment_role" "image_builder" {
   role_id = "image_builder"
-
   privileges = [
-    # https://image-builder.sigs.k8s.io/capi/providers/proxmox
     # Datastore.*
     "Datastore.Allocate",
     "Datastore.AllocateSpace",
     "Datastore.AllocateTemplate",
     "Datastore.Audit",
-
     # SDN.*
     "SDN.Allocate",
     "SDN.Audit",
     "SDN.Use",
-
-    # Sys
+    # Sys.*
     "Sys.AccessNetwork",
     "Sys.Audit",
-
     # VM.*
     "VM.Allocate",
     "VM.Audit",
     "VM.Backup",
     "VM.Clone",
     "VM.Config.CDROM",
-    "VM.Config.Cloudinit",
     "VM.Config.CPU",
+    "VM.Config.Cloudinit",
     "VM.Config.Disk",
     "VM.Config.HWType",
     "VM.Config.Memory",
     "VM.Config.Network",
     "VM.Config.Options",
     "VM.Console",
+    "VM.GuestAgent.Audit",
+    "VM.GuestAgent.FileRead",
+    "VM.GuestAgent.FileSystemMgmt",
+    "VM.GuestAgent.FileWrite",
+    "VM.GuestAgent.Unrestricted",
     "VM.Migrate",
     "VM.PowerMgmt",
+    "VM.Replicate",
     "VM.Snapshot",
     "VM.Snapshot.Rollback",
   ]
