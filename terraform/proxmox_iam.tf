@@ -37,11 +37,6 @@ resource "proxmox_acl" "csi" {
   propagate = true
 }
 
-output "csi_token_value" {
-  value     = proxmox_user_token.csi.value
-  sensitive = true
-}
-
 // Homepage RO Configuration
 
 resource "proxmox_virtual_environment_role" "homepage" {
@@ -150,17 +145,23 @@ resource "proxmox_user_token" "image_builder" {
 resource "proxmox_virtual_environment_user" "capmox" {
   user_id = "capmox@pve"
   comment = "ClusterAPI Proxmox"
-
-  acl {
-    path      = "/"
-    propagate = true
-    role_id   = "PVEVMAdmin"
-  }
 }
 
-resource "proxmox_user_token" "capmox" {
-  comment    = "ClusterAPI Proxmox"
-  token_name = "capmox"
-  user_id    = proxmox_virtual_environment_user.capmox.user_id
-  privileges_separation = true 
+resource "proxmox_virtual_environment_acl" "capmox" {
+  user_id   = proxmox_virtual_environment_user.capmox.user_id
+  path      = "/"
+  /*  PVEVMAdmin grant not enough permissions for the CAPMOX controller to work, 
+  it's missing Sys.Audit at least when calling this api : /api2/json/nodes/proxmox/status
+  using the role PVEAdmin instead,
+  For production environment it's recommanded to follow this guide :
+  https://github.com/ionos-cloud/cluster-api-provider-proxmox/blob/main/docs/advanced-setups.md#proxmox-rbac-with-least-privileges */
+  role_id   = "PVEAdmin" 
+  propagate = true
+}
+
+resource "proxmox_virtual_environment_user_token" "capmox" {
+  user_id               = proxmox_virtual_environment_user.capmox.user_id
+  token_name            = "capi"
+  comment               = "ClusterAPI Proxmox"
+  privileges_separation = false
 }
