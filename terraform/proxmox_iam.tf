@@ -147,7 +147,7 @@ resource "proxmox_virtual_environment_user" "capmox" {
   comment = "ClusterAPI Proxmox"
 }
 
-resource "proxmox_virtual_environment_acl" "capmox" {
+resource "proxmox_acl" "capmox" {
   user_id   = proxmox_virtual_environment_user.capmox.user_id
   path      = "/"
   /*  PVEVMAdmin grant not enough permissions for the CAPMOX controller to work, 
@@ -159,7 +159,7 @@ resource "proxmox_virtual_environment_acl" "capmox" {
   propagate = true
 }
 
-resource "proxmox_virtual_environment_user_token" "capmox" {
+resource "proxmox_user_token" "capmox" {
   user_id               = proxmox_virtual_environment_user.capmox.user_id
   token_name            = "capi"
   comment               = "ClusterAPI Proxmox"
