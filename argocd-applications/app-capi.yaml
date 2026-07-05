@@ -11,7 +11,7 @@ spec:
   project: default
   sources:
     - repoURL: https://kubernetes-sigs.github.io/cluster-api-operator
-      chart: capi-operator
+      chart: cluster-api-operator
       targetRevision: 0.27.0
       helm:
         releaseName: capi-operator
