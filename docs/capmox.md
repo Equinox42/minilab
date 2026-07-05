@@ -11,5 +11,5 @@ export PROXMOX_ISO_POOL=""
 export PROXMOX_BRIDGE=""
 export PROXMOX_STORAGE_POOL=""
 #export PACKER_FLAGS="-var disk_format=raw" 
-#export PACKER_LOG=1  Might help if need troubleshooting, also tailing the following file on the hypervisor : tail -f /var/log/pveproxy/access.log
+#export PACKER_LOG=1  Might help if need troubleshooting, also tailing the following file on the hypervisor : tail -f /var/log/pveproxy/access.log and opening the VM console from Proxmox UI when packer is building. 
 ```

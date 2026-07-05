@@ -1,4 +1,5 @@
 resource "helm_release" "argocd" {
+  depends_on = [ infisical_identity_kubernetes_auth.this ]
   atomic           = true
   name             = "argocd"
   repository       = "https://argoproj.github.io/argo-helm"
