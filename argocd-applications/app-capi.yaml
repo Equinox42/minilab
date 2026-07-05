@@ -27,6 +27,7 @@ spec:
       selfHeal: true
     syncOptions:
       - ServerSideApply=true
+      - CreateNamespace=true
     retry:
       limit: 5
       backoff:
