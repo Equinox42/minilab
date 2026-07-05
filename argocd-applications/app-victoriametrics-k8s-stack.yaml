@@ -30,9 +30,21 @@ spec:
     syncOptions:
       - ServerSideApply=true
       - CreateNamespace=true
+    # https://argo-cd.readthedocs.io/en/stable/user-guide/sync-options/#respect-ignore-difference-configs
+    # argocd must also ignore difference during apply stage
+    # otherwise it ll silently override changes and cause a problem
+      - RespectIgnoreDifferences=true
     retry:
       limit: 5
       backoff:
         duration: 5s
         factor: 2
         maxDuration: 3m
+  ignoreDifferences:
+    - kind: "Secret"
+      jsonPointers:
+        - /data/admin-password
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/template/metadata/annotations/checksum~1secret
